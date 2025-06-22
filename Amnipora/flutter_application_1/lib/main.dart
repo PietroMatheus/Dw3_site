@@ -14,7 +14,7 @@ class AmniporaApp extends StatelessWidget {
       title: 'Amnipora',
       theme: ThemeData(
         fontFamily: 'Arial',
-        primaryColor: Color.fromRGBO(0, 74, 173, 1),
+        primaryColor: const Color.fromRGBO(0, 74, 173, 1),
         elevatedButtonTheme: ElevatedButtonThemeData(
           style: ElevatedButton.styleFrom(
             backgroundColor: Colors.black,
@@ -27,22 +27,51 @@ class AmniporaApp extends StatelessWidget {
   }
 }
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
+
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  final ScrollController _scrollController = ScrollController();
+
+  final GlobalKey _registerKey = GlobalKey();
+  final GlobalKey _productsKey = GlobalKey();
+  final GlobalKey _aboutKey = GlobalKey();
+
+  void _scrollToSection(GlobalKey key) {
+    final context = key.currentContext;
+    if (context != null) {
+      Scrollable.ensureVisible(
+        context,
+        duration: const Duration(milliseconds: 500),
+        curve: Curves.easeInOut,
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
       body: SingleChildScrollView(
+        controller: _scrollController,
         child: Column(
           children: [
             _buildHeader(),
+            const SizedBox(height: 80),
             _buildHeroSection(),
+            const SizedBox(height: 80),
             _buildWave(),
-            _buildPartnersSection(),
-            _buildObjectivesSection(),
-            _buildRegisterLoginSection(),
+            const SizedBox(height: 0),
+            _buildSection(_productsKey, _buildPartnersSection()),
+            const SizedBox(height: 80),
+            _buildSection(_aboutKey, _buildObjectivesSection()),
+            const SizedBox(height: 80),
+            _buildSection(_registerKey, _buildRegisterLoginSection()),
+            const SizedBox(height: 80),
             _buildReviewsSection(),
             _buildFooter(),
           ],
@@ -57,37 +86,28 @@ class HomePage extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Row(
-            children: [
-              Transform.rotate(
-                angle: 3.14,
-                child: Image.asset(
-                  'assets/img/logo.png',
-                  width: 150,
-                  height: 150,
-                ),
-              ),
-              const SizedBox(width: 8),
-            ],
+          Transform.rotate(
+            angle: 3.14,
+            child: Image.asset('assets/img/logo.png', width: 150, height: 150),
           ),
           Row(
             children: [
               TextButton(
-                onPressed: () {},
+                onPressed: () => _scrollToSection(_registerKey),
                 child: const Text(
                   'Cadastre-se',
                   style: TextStyle(color: Color.fromRGBO(0, 74, 173, 1)),
                 ),
               ),
               TextButton(
-                onPressed: () {},
+                onPressed: () => _scrollToSection(_productsKey),
                 child: const Text(
                   'Produtos',
                   style: TextStyle(color: Color.fromRGBO(0, 74, 173, 1)),
                 ),
               ),
               TextButton(
-                onPressed: () {},
+                onPressed: () => _scrollToSection(_aboutKey),
                 child: const Text(
                   'Sobre Nós',
                   style: TextStyle(color: Color.fromRGBO(0, 74, 173, 1)),
@@ -99,318 +119,303 @@ class HomePage extends StatelessWidget {
       ),
     );
   }
-}
 
-Widget _buildHeroSection() {
-  return Padding(
-    padding: const EdgeInsets.all(32.0),
-    child: Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        Expanded(
-          flex: 6,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Text(
-                'Somos a Amnipora',
-                style: TextStyle(
-                  fontSize: 28,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black,
-                ),
-              ),
-              const SizedBox(height: 16),
-              const Text(
-                'A Amnipora é uma empresa especializada na gestão de negócios de delivery. Oferecemos soluções que otimizam processos, melhoram a operação e aumentam os lucros. Nosso objetivo é simplificar a gestão, trazer mais eficiência e ajudar seu delivery a crescer de forma organizada e sustentável. Somos seu parceiro para transformar desafios em resultados.',
-                style: TextStyle(color: Colors.black87, height: 1.5),
-              ),
-              const SizedBox(height: 16),
-              ElevatedButton(
-                onPressed: () {},
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.black,
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 24,
-                    vertical: 12,
+  Widget _buildSection(GlobalKey key, Widget child) {
+    return Container(key: key, child: child);
+  }
+
+  Widget _buildHeroSection() {
+    return Padding(
+      padding: const EdgeInsets.all(32.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Expanded(
+            flex: 6,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  'Somos a Amnipora',
+                  style: TextStyle(
+                    fontSize: 28,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black,
                   ),
                 ),
-                child: const Text('Saiba Mais'),
-              ),
-            ],
-          ),
-        ),
-        const SizedBox(width: 32),
-        Expanded(
-          flex: 4,
-          child: Container(
-            padding: const EdgeInsets.all(8),
-            child: Image.asset(
-              'assets/img/somos.png',
-              fit: BoxFit.contain,
-              width: 400,
-              height: 400,
+                const SizedBox(height: 16),
+                const Text(
+                  'A Amnipora é uma empresa especializada na gestão de negócios de delivery...',
+                  style: TextStyle(color: Colors.black87, height: 1.5),
+                ),
+                const SizedBox(height: 16),
+                ElevatedButton(
+                  onPressed: () {},
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.black,
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 24,
+                      vertical: 12,
+                    ),
+                  ),
+                  child: const Text('Saiba Mais'),
+                ),
+              ],
             ),
           ),
-        ),
-      ],
-    ),
-  );
-}
-
-Widget _buildWave() {
-  return ClipPath(
-    clipper: WaveClipper(),
-    child: Container(height: 100, color: Color.fromRGBO(0, 74, 173, 1)),
-  );
-}
-
-Widget _buildPartnersSection() {
-  return Container(
-    color: Color.fromRGBO(0, 74, 173, 1),
-    padding: const EdgeInsets.all(16.0),
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Text(
-          'Parcerias fechadas com:',
-          style: TextStyle(
-            fontSize: 24,
-            fontWeight: FontWeight.bold,
-            color: Colors.white,
+          const SizedBox(width: 32),
+          Expanded(
+            flex: 4,
+            child: Container(
+              padding: const EdgeInsets.all(8),
+              child: Image.asset(
+                'assets/img/somos.png',
+                fit: BoxFit.contain,
+                width: 400,
+                height: 400,
+              ),
+            ),
           ),
-        ),
-        const SizedBox(height: 16),
-        GridView.count(
-          crossAxisCount: 3,
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          children: List.generate(
-            6,
-            (index) => Card(
+        ],
+      ),
+    );
+  }
+
+  Widget _buildWave() {
+    return ClipPath(
+      clipper: WaveClipper(),
+      child: Container(height: 100, color: const Color.fromRGBO(0, 74, 173, 1)),
+    );
+  }
+
+  Widget _buildPartnersSection() {
+    return Container(
+      color: const Color.fromRGBO(0, 74, 173, 1),
+      padding: const EdgeInsets.all(16.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text(
+            'Parcerias fechadas com:',
+            style: TextStyle(
+              fontSize: 24,
+              fontWeight: FontWeight.bold,
               color: Colors.white,
-              child: Center(child: Text('Parceiro ${index + 1}')),
             ),
           ),
-        ),
-      ],
-    ),
-  );
-}
-
-Widget _buildObjectivesSection() {
-  return Padding(
-    padding: const EdgeInsets.all(16.0),
-    child: Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        // Texto lado esquerdo
-        Expanded(
-          flex: 2,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: const [
-              Text(
-                'Qual o nosso objetivo?',
-                style: TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black,
-                ),
-              ),
-              SizedBox(height: 8),
-              Text(
-                '1 - Otimizar a gestão de negócios de delivery',
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black87,
-                ),
-              ),
-              Text(
-                'Ajudamos empresas a organizar pedidos, finanças e logística, tornando a gestão mais simples e eficiente.',
-                style: TextStyle(color: Colors.black54),
-              ),
-              SizedBox(height: 8),
-              Text(
-                '2 - Aumentar a eficiência e os lucros dos clientes',
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black87,
-                ),
-              ),
-              Text(
-                'Oferecemos soluções que reduzem custos, otimizam processos e aumentam a produtividade e os lucros.',
-                style: TextStyle(color: Colors.black54),
-              ),
-              SizedBox(height: 8),
-              Text(
-                '3 - Oferecer soluções práticas para crescimento sustentável',
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black87,
-                ),
-              ),
-              Text(
-                'Fornecemos ferramentas práticas para que os negócios cresçam de forma estruturada, rentável e duradoura.',
-                style: TextStyle(color: Colors.black54),
-              ),
-            ],
-          ),
-        ),
-        const SizedBox(width: 16),
-        Expanded(
-          flex: 3,
-          child: Image.asset(
-            'assets/img/objetivo.png',
-            fit: BoxFit.cover,
-            width: 150,
-            height: 300,
-          ),
-        ),
-      ],
-    ),
-  );
-}
-
-Widget _buildRegisterLoginSection() {
-  return Padding(
-    padding: const EdgeInsets.all(16.0),
-    child: Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: [_buildFormBox('Cadastrar-se'), _buildFormBox('Fazer Login')],
-    ),
-  );
-}
-
-Widget _buildFormBox(String title) {
-  return Container(
-    width: 300,
-    padding: const EdgeInsets.all(16.0),
-    decoration: BoxDecoration(
-      color: Colors.blue.shade100,
-      borderRadius: BorderRadius.circular(8),
-    ),
-    child: Column(
-      children: [
-        Text(
-          title,
-          style: const TextStyle(
-            fontSize: 20,
-            fontWeight: FontWeight.bold,
-            color: Color.fromRGBO(0, 74, 173, 1),
-          ),
-        ),
-        const SizedBox(height: 8),
-        const TextField(decoration: InputDecoration(labelText: 'Email')),
-        const TextField(decoration: InputDecoration(labelText: 'Senha')),
-        const SizedBox(height: 8),
-        ElevatedButton(onPressed: () {}, child: Text(title)),
-      ],
-    ),
-  );
-}
-
-Widget _buildReviewsSection() {
-  return Container(
-    color: const Color.fromRGBO(0, 74, 173, 1),
-    padding: const EdgeInsets.all(16.0),
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Text(
-          'Nossas Avaliações',
-          style: TextStyle(
-            fontSize: 24,
-            fontWeight: FontWeight.bold,
-            color: Colors.white,
-          ),
-        ),
-        const SizedBox(height: 16),
-        SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          child: Row(
+          const SizedBox(height: 16),
+          GridView.count(
+            crossAxisCount: 3,
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
             children: List.generate(
-              3,
-              (index) => Container(
-                width: 1000 / 1,
-                margin: const EdgeInsets.symmetric(horizontal: 8.0),
-                padding: const EdgeInsets.all(16.0),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(8),
+              6,
+              (index) => Card(
+                color: Colors.white,
+                child: Center(child: Text('Parceiro ${index + 1}')),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildObjectivesSection() {
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Expanded(
+            flex: 2,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: const [
+                Text(
+                  'Qual o nosso objetivo?',
+                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                 ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      '"Um feedback incrível ${index + 1}"',
-                      style: const TextStyle(
-                        fontSize: 14,
-                        fontStyle: FontStyle.italic,
-                        color: Colors.black87,
+                SizedBox(height: 8),
+                Text(
+                  '1 - Otimizar a gestão de negócios de delivery',
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+                Text(
+                  'Ajudamos empresas a organizar pedidos, finanças e logística...',
+                ),
+                SizedBox(height: 8),
+                Text(
+                  '2 - Aumentar a eficiência e os lucros dos clientes',
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+                Text(
+                  'Oferecemos soluções que reduzem custos e aumentam a produtividade...',
+                ),
+                SizedBox(height: 8),
+                Text(
+                  '3 - Oferecer soluções práticas para crescimento sustentável',
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+                Text(
+                  'Fornecemos ferramentas para crescimento estruturado e duradouro.',
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(width: 16),
+          Expanded(
+            flex: 3,
+            child: Image.asset(
+              'assets/img/objetivo.png',
+              fit: BoxFit.cover,
+              width: 150,
+              height: 300,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildRegisterLoginSection() {
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [_buildFormBox('Cadastrar-se'), _buildFormBox('Fazer Login')],
+      ),
+    );
+  }
+
+  Widget _buildFormBox(String title) {
+    return Container(
+      width: 300,
+      padding: const EdgeInsets.all(16.0),
+      decoration: BoxDecoration(
+        color: Colors.blue.shade100,
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Column(
+        children: [
+          Text(
+            title,
+            style: const TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+              color: Color.fromRGBO(0, 74, 173, 1),
+            ),
+          ),
+          const SizedBox(height: 8),
+          const TextField(decoration: InputDecoration(labelText: 'Email')),
+          const TextField(decoration: InputDecoration(labelText: 'Senha')),
+          const SizedBox(height: 8),
+          ElevatedButton(onPressed: () {}, child: Text(title)),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildReviewsSection() {
+    return Container(
+      color: const Color.fromRGBO(0, 74, 173, 1),
+      padding: const EdgeInsets.all(16.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text(
+            'Nossas Avaliações',
+            style: TextStyle(
+              fontSize: 24,
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
+            ),
+          ),
+          const SizedBox(height: 16),
+          SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
+              children: List.generate(
+                3,
+                (index) => Container(
+                  width: 300,
+                  margin: const EdgeInsets.symmetric(horizontal: 8.0),
+                  padding: const EdgeInsets.all(16.0),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: const [
+                      Text(
+                        '"Um feedback incrível"',
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontStyle: FontStyle.italic,
+                        ),
                       ),
-                    ),
-                    const SizedBox(height: 8),
-                    Row(
-                      children: [
-                        const CircleAvatar(
-                          radius: 12,
-                          backgroundColor: Colors.grey,
-                          child: Icon(
-                            Icons.person,
-                            size: 14,
-                            color: Colors.white,
+                      SizedBox(height: 8),
+                      Row(
+                        children: [
+                          CircleAvatar(
+                            radius: 12,
+                            backgroundColor: Colors.grey,
+                            child: Icon(
+                              Icons.person,
+                              size: 14,
+                              color: Colors.white,
+                            ),
                           ),
-                        ),
-                        const SizedBox(width: 6),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: const [
-                            Text(
-                              'Nome',
-                              style: TextStyle(
-                                fontSize: 12,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.black,
+                          SizedBox(width: 6),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Nome',
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.bold,
+                                ),
                               ),
-                            ),
-                            Text(
-                              'Descrição',
-                              style: TextStyle(
-                                fontSize: 10,
-                                color: Colors.black54,
+                              Text(
+                                'Descrição',
+                                style: TextStyle(
+                                  fontSize: 10,
+                                  color: Colors.black54,
+                                ),
                               ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ],
+                            ],
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
           ),
-        ),
-      ],
-    ),
-  );
-}
+        ],
+      ),
+    );
+  }
 
-Widget _buildFooter() {
-  return Container(
-    color: Colors.blue.shade900,
-    padding: const EdgeInsets.all(16.0),
-    child: Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: [
-        const Text('Amnipora', style: TextStyle(color: Colors.white)),
-        const Text('Produtos', style: TextStyle(color: Colors.white)),
-        const Text('Cadastre-se', style: TextStyle(color: Colors.white)),
-        const Text('Sobre Nós', style: TextStyle(color: Colors.white)),
-      ],
-    ),
-  );
+  Widget _buildFooter() {
+    return Container(
+      color: Colors.blue.shade900,
+      padding: const EdgeInsets.all(16.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: const [
+          Text('Amnipora', style: TextStyle(color: Colors.white)),
+          Text('Produtos', style: TextStyle(color: Colors.white)),
+          Text('Cadastre-se', style: TextStyle(color: Colors.white)),
+          Text('Sobre Nós', style: TextStyle(color: Colors.white)),
+        ],
+      ),
+    );
+  }
 }
 
 class WaveClipper extends CustomClipper<Path> {
